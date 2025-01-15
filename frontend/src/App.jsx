@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Routes, Route } from "react-router";
+import React, { useContext, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
 import Contact from "./pages/Contact";
@@ -17,6 +17,16 @@ import { ToastContainer } from "react-toastify";
 import "./index.css";
 
 const App = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sand from-30% via-sand via-85% to-sky-200">
       <ToastContainer />
