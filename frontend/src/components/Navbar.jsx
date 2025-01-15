@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 50) {
+    if (touchEnd && touchStart - touchEnd > 50) {
       setNav(false);
     }
     setTouchStart(null);
