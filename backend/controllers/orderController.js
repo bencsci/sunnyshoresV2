@@ -12,24 +12,37 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // PayPal configuration
 let environment;
-if (process.env.NODE_ENV === "production") {
-  environment = new paypal.core.LiveEnvironment(
-    process.env.PAYPAL_CLIENT_ID,
-    process.env.PAYPAL_CLIENT_SECRET
-  );
-} else {
-  environment = new paypal.core.SandboxEnvironment(
-    process.env.PAYPAL_CLIENT_ID,
-    process.env.PAYPAL_CLIENT_SECRET
-  );
+try {
+  if (process.env.NODE_ENV === "production") {
+    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+      throw new Error(
+        "PayPal credentials are missing in production environment"
+      );
+    }
+    environment = new paypal.core.LiveEnvironment(
+      process.env.PAYPAL_CLIENT_ID,
+      process.env.PAYPAL_CLIENT_SECRET
+    );
+  } else {
+    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+      throw new Error(
+        "PayPal credentials are missing in development environment"
+      );
+    }
+    environment = new paypal.core.SandboxEnvironment(
+      process.env.PAYPAL_CLIENT_ID,
+      process.env.PAYPAL_CLIENT_SECRET
+    );
+  }
+} catch (error) {
+  console.error("PayPal Environment Setup Error:", error);
 }
 
-// Add these debug logs
-console.log("Environment:", process.env.NODE_ENV);
-console.log("PayPal Credentials:", {
-  clientId: process.env.PAYPAL_CLIENT_ID,
-  clientSecret: process.env.PAYPAL_CLIENT_SECRET,
-});
+// Add more detailed debug logs
+console.log("Node Environment:", process.env.NODE_ENV);
+console.log("PayPal Environment Type:", environment?.constructor?.name);
+console.log("PayPal Client ID exists:", !!process.env.PAYPAL_CLIENT_ID);
+console.log("PayPal Client Secret exists:", !!process.env.PAYPAL_CLIENT_SECRET);
 
 const paypalClient = new paypal.core.PayPalHttpClient(environment);
 
@@ -63,6 +76,10 @@ const placeOrder = async (req, res) => {
 // Placing order using Paypal method
 const placeOrderPaypal = async (req, res) => {
   try {
+    if (!environment || !paypalClient) {
+      throw new Error("PayPal is not properly configured");
+    }
+
     const { userId, items, amount, address } = req.body;
 
     // Calculate the actual item total
@@ -132,10 +149,16 @@ const placeOrderPaypal = async (req, res) => {
         .href,
     });
   } catch (error) {
-    console.error("PayPal Error:", error);
+    console.error("PayPal Order Creation Error:", {
+      message: error.message,
+      stack: error.stack,
+      details: error.details || "No additional details",
+    });
+
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to create PayPal order. Please try again later.",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
