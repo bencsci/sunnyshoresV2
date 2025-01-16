@@ -141,7 +141,7 @@ const Banner = () => {
                   </div>
                   <div className="py-1.5">
                     <Link
-                      to="/profile"
+                      to="/"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-teal/5"
                     >
                       <span>👤 My Profile</span>
