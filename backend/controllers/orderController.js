@@ -10,32 +10,34 @@ const deliveryCharge = 10;
 // Gateway initalize for Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// PayPal configuration
+// Updated PayPal configuration
 let environment;
+let paypalClient;
+
 try {
-  if (process.env.NODE_ENV === "production") {
-    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
-      throw new Error(
-        "PayPal credentials are missing in production environment"
-      );
-    }
-    environment = new paypal.core.LiveEnvironment(
-      process.env.PAYPAL_CLIENT_ID,
-      process.env.PAYPAL_CLIENT_SECRET
-    );
-  } else {
-    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
-      throw new Error(
-        "PayPal credentials are missing in development environment"
-      );
-    }
-    environment = new paypal.core.SandboxEnvironment(
-      process.env.PAYPAL_CLIENT_ID,
-      process.env.PAYPAL_CLIENT_SECRET
-    );
+  const clientId = process.env.PAYPAL_CLIENT_ID?.trim();
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim();
+
+  if (!clientId || !clientSecret) {
+    throw new Error("PayPal credentials are missing");
   }
+
+  // Log credentials format (safely)
+  console.log("Credential Check:", {
+    clientIdLength: clientId.length,
+    clientSecretLength: clientSecret.length,
+    clientIdStart: clientId.substring(0, 4) + "...",
+    clientSecretStart: clientSecret.substring(0, 4) + "...",
+  });
+
+  // Always use sandbox for testing
+  environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
+  paypalClient = new paypal.core.PayPalHttpClient(environment);
+
+  // Verify client is working
+  console.log("PayPal client initialized successfully");
 } catch (error) {
-  console.error("PayPal Environment Setup Error:", error);
+  console.error("PayPal Setup Error:", error);
 }
 
 // Add more detailed debug logs
@@ -43,8 +45,6 @@ console.log("Node Environment:", process.env.NODE_ENV);
 console.log("PayPal Environment Type:", environment?.constructor?.name);
 console.log("PayPal Client ID exists:", !!process.env.PAYPAL_CLIENT_ID);
 console.log("PayPal Client Secret exists:", !!process.env.PAYPAL_CLIENT_SECRET);
-
-const paypalClient = new paypal.core.PayPalHttpClient(environment);
 
 // Placing order using COD method
 const placeOrder = async (req, res) => {
