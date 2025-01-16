@@ -13,6 +13,8 @@ const Banner = () => {
     setToken,
     user,
     setUser,
+    isLoading,
+    initialLoadComplete,
   } = useContext(ShopContext);
 
   const getGreeting = () => {
@@ -64,12 +66,21 @@ const Banner = () => {
           {/* Welcome & Time Section */}
           <div className="w-full md:w-2/4 text-center">
             <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-teal/10">
-              <h2 className="text-2xl font-semibold text-teal mb-1">
-                {getGreeting()}, {user.name ? user.name : "Guest"} 👋
-              </h2>
-              <p className="text-gray-600">
-                {formatDate()} • {formatTime()}
-              </p>
+              {initialLoadComplete || isLoading ? (
+                <>
+                  <h2 className="text-2xl font-semibold text-teal mb-1">
+                    {getGreeting()}, {user.name ? user.name : "Guest"} 👋
+                  </h2>
+                  <p className="text-gray-600">
+                    {formatDate()} • {formatTime()}
+                  </p>
+                </>
+              ) : (
+                <div className="h-14 flex flex-col items-center justify-center">
+                  <div className="w-48 h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="w-36 h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              )}
               <div className="mt-3 flex justify-center gap-4 text-sm">
                 <span className="px-3 py-1 bg-teal/10 rounded-full text-teal">
                   🌡️ 75°F

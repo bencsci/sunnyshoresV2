@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 export const ShopContext = createContext();
 
-const ShopContextProvider = (props) => {
+export const ShopContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const currency = "$";
   const deliveryFee = 10;
@@ -16,6 +16,8 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const addToCart = async (itemId) => {
     const cartData = structuredClone(cartItems);
@@ -164,11 +166,30 @@ const ShopContextProvider = (props) => {
   };
 
   useEffect(() => {
-    getProductData();
-    getCartInfo();
+    const initializeApp = async () => {
+      setIsLoading(true);
+      try {
+        // Get products
+        await getProductData();
+
+        // Check authentication
+        const localToken = localStorage.getItem("token");
+        if (localToken) {
+          setToken(localToken);
+          await Promise.all([getUserCart(localToken), setUserInfo()]);
+        }
+      } catch (error) {
+        console.error("Initialization error:", error);
+      } finally {
+        setIsLoading(false);
+        setInitialLoadComplete(true);
+      }
+    };
+
+    initializeApp();
   }, []);
 
-  const value = {
+  const contextValue = {
     products,
     currency,
     deliveryFee,
@@ -186,10 +207,17 @@ const ShopContextProvider = (props) => {
     getCartInfo,
     updateCartDataFromLogin,
     setUserInfo,
+    isLoading,
+    setIsLoading,
+    initialLoadComplete,
   };
 
+  if (!initialLoadComplete) {
+    return null;
+  }
+
   return (
-    <ShopContext.Provider value={value}>{props.children}</ShopContext.Provider>
+    <ShopContext.Provider value={contextValue}>{children}</ShopContext.Provider>
   );
 };
 

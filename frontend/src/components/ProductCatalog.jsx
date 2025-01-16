@@ -13,8 +13,8 @@ const ProductCatalog = ({ id, image, name, price }) => {
       </Link>
       {/* Product Details */}
       <div className="p-4 text-center">
-        <h3 className="text-lg font-medium text-black">{name}</h3>
-        <p className="text-black font-bold mt-1">
+        <h3 className="text-sm md:text-lg font-medium text-black">{name}</h3>
+        <p className="text-sm md:text-base text-black font-bold mt-1">
           {currency}
           {price}
         </p>
