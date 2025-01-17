@@ -22,8 +22,6 @@ const Contact = () => {
       } else {
         toast.error(response.data.message);
       }
-
-      console.log(response.data);
     } catch (error) {
       console.log(error);
       toast.error("Failed to send message. Please try again.");

@@ -78,7 +78,7 @@ const PlaceOrder = () => {
         deliveryCharge: parseFloat(amount.shipping.toFixed(2)),
       };
 
-      console.log(orderData);
+      //console.log(orderData);
 
       switch (paymentMethod) {
         // Api Call for COD
@@ -88,8 +88,6 @@ const PlaceOrder = () => {
             orderData,
             { headers: { token } }
           );
-          console.log("TEST");
-          console.log(orderData);
           if (response.data.success) {
             setCartItems({});
             navigate("/orders");
