@@ -14,7 +14,6 @@ const PlaceOrder = () => {
     cartItems,
     setCartItems,
     getCartAmount,
-    deliveryFee,
     products,
   } = useContext(ShopContext);
 
@@ -76,6 +75,7 @@ const PlaceOrder = () => {
         address: deliveryInfo,
         items: orderItems,
         amount: parseFloat(amount.total.toFixed(2)),
+        deliveryCharge: parseFloat(amount.shipping.toFixed(2)),
       };
 
       console.log(orderData);

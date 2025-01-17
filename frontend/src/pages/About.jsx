@@ -14,7 +14,6 @@ const About = () => {
             <div className="w-24 h-1 bg-teal-500 mx-auto rounded-full"></div>
           </div>
 
-          {/* Two Column Layout for Introduction */}
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
@@ -43,7 +42,7 @@ const About = () => {
             </div>
           </div>
 
-          {/* Mission Section with Card Design */}
+          {/* Mission Section */}
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
             <h2 className="text-3xl font-bold text-teal-700 mb-6">
               Our Mission
@@ -79,10 +78,7 @@ const About = () => {
                 desc: "Providing exceptional customer satisfaction",
               },
             ].map((value, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-              >
+              <div key={index} className="bg-white p-6 rounded-xl shadow-lg">
                 <div className="text-4xl mb-4">{value.icon}</div>
                 <h3 className="text-xl font-semibold text-teal-700 mb-2">
                   {value.title}

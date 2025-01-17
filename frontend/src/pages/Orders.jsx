@@ -60,9 +60,26 @@ const Orders = () => {
     }
   };
 
+  const clearFailedPayment = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/order/clear`,
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        console.log("Failed payments cleared");
+      } else {
+        console.log("Failed payments not cleared");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     loadOrderData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    clearFailedPayment();
   }, [token]);
 
   return (

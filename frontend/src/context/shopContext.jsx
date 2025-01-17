@@ -9,7 +9,7 @@ export const ShopContext = createContext();
 export const ShopContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const currency = "$";
-  const deliveryFee = 10;
+  let deliveryFee = 10;
   const tax_rate = 0.15;
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
@@ -69,7 +69,13 @@ export const ShopContextProvider = ({ children }) => {
       0
     );
 
+    console.log(subtotal);
     const taxes = subtotal * tax_rate;
+    if (subtotal > 75) {
+      deliveryFee = 0;
+    } else {
+      deliveryFee = 10;
+    }
     const total = subtotal + taxes + deliveryFee;
 
     return {

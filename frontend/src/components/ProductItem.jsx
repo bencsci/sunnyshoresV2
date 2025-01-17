@@ -7,7 +7,7 @@ const ProductItem = ({ id, image, name, price }) => {
 
   return (
     <div className="p-2 h-full">
-      <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+      <div className="bg-white rounded-lg shadow-md h-full flex flex-col">
         <div className="relative overflow-hidden group">
           <img src={image} className="w-full h-64 object-cover" alt={name} />
         </div>

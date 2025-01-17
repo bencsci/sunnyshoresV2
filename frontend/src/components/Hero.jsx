@@ -24,18 +24,6 @@ const Hero = () => {
 
   return (
     <div className="relative overflow-hidden py-16">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 2px 2px, rgba(0,0,0,0.2) 1px, transparent 0)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Text Section */}
@@ -102,11 +90,15 @@ const Hero = () => {
           {/* Carousel Section */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src={currentProduct.image}
-                alt={currentProduct.name}
-                className="h-[500px] w-full object-cover transform hover:scale-105 transition-transform duration-700"
-              />
+              <Link to={`/product/${currentProduct._id}`}>
+                {" "}
+                <img
+                  src={currentProduct.image}
+                  alt={currentProduct.name}
+                  className="h-[500px] w-full object-cover transform hover:scale-105 transition-transform duration-700"
+                />
+              </Link>
+
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                 <h3 className="text-white text-xl font-semibold">
                   {currentProduct.name}

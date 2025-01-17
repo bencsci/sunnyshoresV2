@@ -58,15 +58,15 @@ const Product = () => {
     <div className="min-h-screen px-4 py-12">
       <div className="max-w-7xl mx-auto">
         {/* Main Product Section */}
-        <div className="bg-white shadow-xl rounded-2xl p-8 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="bg-white shadow-xl rounded-2xl p-4 md:p-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
             {/* Image Gallery Section */}
             <div className="space-y-4">
               <div className="overflow-hidden rounded-2xl border border-gray-100">
                 <img
                   src={productData.image}
                   alt={productData.name}
-                  className="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-500"
+                  className="w-full h-[300px] md:h-[500px] object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>

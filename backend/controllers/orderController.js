@@ -5,7 +5,7 @@ import paypal from "@paypal/checkout-server-sdk";
 
 // global variables
 const currency = "cad";
-const deliveryCharge = 10;
+//const deliveryCharge = 10;
 
 // Gateway initalize for Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -22,14 +22,6 @@ try {
     throw new Error("PayPal credentials are missing");
   }
 
-  // Log credentials format (safely)
-  console.log("Credential Check:", {
-    clientIdLength: clientId.length,
-    clientSecretLength: clientSecret.length,
-    clientIdStart: clientId.substring(0, 4) + "...",
-    clientSecretStart: clientSecret.substring(0, 4) + "...",
-  });
-
   // Always use sandbox for testing
   environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
   paypalClient = new paypal.core.PayPalHttpClient(environment);
@@ -39,12 +31,6 @@ try {
 } catch (error) {
   console.error("PayPal Setup Error:", error);
 }
-
-// Add more detailed debug logs
-console.log("Node Environment:", process.env.NODE_ENV);
-console.log("PayPal Environment Type:", environment?.constructor?.name);
-console.log("PayPal Client ID exists:", !!process.env.PAYPAL_CLIENT_ID);
-console.log("PayPal Client Secret exists:", !!process.env.PAYPAL_CLIENT_SECRET);
 
 // Placing order using COD method
 const placeOrder = async (req, res) => {
@@ -82,20 +68,15 @@ const placeOrderPaypal = async (req, res) => {
 
     const { userId, items, amount, address } = req.body;
 
-    // Calculate the actual item total
-    const itemTotal = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    // Calculate total amount (items + shipping)
-    const totalAmount = (itemTotal + deliveryCharge).toFixed(2);
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
 
     const orderData = {
       userId,
       items,
       address,
-      amount: parseFloat(totalAmount),
+      amount,
       paymentMethod: "PayPal",
       payment: false,
       date: Date.now(),
@@ -112,37 +93,19 @@ const placeOrderPaypal = async (req, res) => {
         {
           amount: {
             currency_code: currency.toUpperCase(),
-            value: totalAmount,
-            breakdown: {
-              item_total: {
-                currency_code: currency.toUpperCase(),
-                value: itemTotal.toFixed(2),
-              },
-              shipping: {
-                currency_code: currency.toUpperCase(),
-                value: deliveryCharge.toFixed(2),
-              },
-            },
+            value: amount.toFixed(2),
           },
-          items: items.map((item) => ({
-            name: item.name,
-            unit_amount: {
-              currency_code: currency.toUpperCase(),
-              value: item.price.toFixed(2),
-            },
-            quantity: item.quantity,
-          })),
         },
       ],
       application_context: {
-        return_url: `${req.headers.origin}/verify?success=true&orderId=${newOrder._id}`,
-        cancel_url: `${req.headers.origin}/verify?success=false&orderId=${newOrder._id}`,
+        return_url: `${req.headers.origin}/verifyPayPal?success=true&orderId=${newOrder._id}`,
+        cancel_url: `${req.headers.origin}/verifyPayPal?success=false&orderId=${newOrder._id}`,
       },
     });
 
     const response = await paypalClient.execute(request);
+    console.log("PayPal order created successfully");
 
-    // Send back the approval URL from PayPal's response
     res.json({
       success: true,
       approvalUrl: response.result.links.find((link) => link.rel === "approve")
@@ -157,7 +120,7 @@ const placeOrderPaypal = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Failed to create PayPal order. Please try again later.",
+      message: "Failed to create PayPal order: " + error.message,
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
@@ -166,7 +129,7 @@ const placeOrderPaypal = async (req, res) => {
 // Placing order using Stripe method
 const placeOrderStripe = async (req, res) => {
   try {
-    const { userId, items, amount, address } = req.body;
+    const { userId, items, amount, address, deliveryCharge } = req.body;
     const { origin } = req.headers;
 
     const orderData = {
@@ -205,8 +168,8 @@ const placeOrderStripe = async (req, res) => {
     });
 
     const session = await stripe.checkout.sessions.create({
-      success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
-      cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
+      success_url: `${origin}/verifyStripe?success=true&orderId=${newOrder._id}`,
+      cancel_url: `${origin}/verifyStripe?success=false&orderId=${newOrder._id}`,
       line_items,
       mode: "payment",
     });
@@ -294,6 +257,43 @@ const updateStatus = async (req, res) => {
   }
 };
 
+const clearFailedPayment = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    const result = await orderModel.deleteMany({
+      userId,
+      payment: false,
+      paymentMethod: { $in: ["Stripe", "PayPal"] },
+    });
+
+    if (result.deletedCount > 0) {
+      res.json({
+        success: true,
+        message: `Cleared ${result.deletedCount} failed payment(s)`,
+      });
+    } else {
+      res.json({
+        success: true,
+        message: "No failed payments found",
+      });
+    }
+  } catch (error) {
+    console.error("Clear Failed Payment Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error clearing failed payments: " + error.message,
+    });
+  }
+};
+
 export {
   placeOrder,
   placeOrderPaypal,
@@ -303,4 +303,5 @@ export {
   updateStatus,
   verifyStripePayment,
   verifyPaypalPayment,
+  clearFailedPayment,
 };

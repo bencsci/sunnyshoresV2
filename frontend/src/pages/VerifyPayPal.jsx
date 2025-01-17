@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import axios from "axios";
 import { ShopContext } from "../context/shopContext";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ const PaypalVerify = () => {
     const verifyPayment = async () => {
       try {
         const response = await axios.post(
-          `${backendUrl}/api/order/paypal/verify`,
+          `${backendUrl}/api/order/verifyPayPal`,
           {
             success: searchParams.get("success"),
             orderId: searchParams.get("orderId"),

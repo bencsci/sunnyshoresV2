@@ -10,7 +10,8 @@ import PlaceOrder from "./pages/PlaceOrder";
 import Product from "./pages/Product";
 import Navbar from "./components/Navbar";
 import About from "./pages/About";
-import Verify from "./pages/VerifyStripe";
+import VerifyStripe from "./pages/VerifyStripe";
+import VerifyPayPal from "./pages/VerifyPayPal";
 import Banner from "./components/Banner";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
@@ -29,7 +30,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sand from-30% via-sand via-85% to-sky-200">
-      <ToastContainer />
+      <ToastContainer autoClose={1000} />
       <Banner />
       <Navbar />
       <Routes>
@@ -42,7 +43,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/orders" element={<Orders />} />
-        <Route path="/verify" element={<Verify />} />
+        <Route path="/verifyStripe" element={<VerifyStripe />} />
+        <Route path="/verifyPayPal" element={<VerifyPayPal />} />
       </Routes>
       <Footer />
     </div>

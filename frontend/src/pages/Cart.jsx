@@ -43,6 +43,12 @@ const Cart = () => {
             Your Shopping Cart
           </h1>
 
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-center">
+            <p className="text-yellow-800 text-lg">
+              🚚 Free shipping on orders over {currency}75!
+            </p>
+          </div>
+
           {cartData.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-12 text-center max-w-2xl mx-auto">
               <div className="space-y-6 sm:space-y-8">
@@ -69,14 +75,14 @@ const Cart = () => {
                 {cartData.map((item) => (
                   <div
                     key={item._id}
-                    className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow duration-300"
+                    className="bg-white rounded-xl shadow-md p-4 sm:p-6"
                   >
                     <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
                       <div className="relative group w-32 sm:w-40">
                         <img
                           src={item.image}
                           alt={item.name}
-                          className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
+                          className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-xl shadow-md "
                         />
                       </div>
 
