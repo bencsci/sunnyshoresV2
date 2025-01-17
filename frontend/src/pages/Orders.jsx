@@ -56,6 +56,7 @@ const Orders = () => {
         });
         setOrderData(allItemOrders.reverse());
       }
+      clearFailedPayment();
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -83,10 +84,6 @@ const Orders = () => {
   useEffect(() => {
     loadOrderData();
   }, [token]);
-
-  useEffect(() => {
-    clearFailedPayment();
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
