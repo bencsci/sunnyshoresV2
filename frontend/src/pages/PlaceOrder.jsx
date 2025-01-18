@@ -71,6 +71,14 @@ const PlaceOrder = () => {
       }
 
       const amount = await getCartAmount();
+      console.log(amount);
+
+      // Validate amount and deliveryCharge
+      if (isNaN(amount.total) || isNaN(amount.shipping)) {
+        toast.error("System Error. Please try again later.");
+        return;
+      }
+
       let orderData = {
         address: deliveryInfo,
         items: orderItems,
@@ -78,7 +86,7 @@ const PlaceOrder = () => {
         deliveryCharge: parseFloat(amount.shipping.toFixed(2)),
       };
 
-      //console.log(orderData);
+      //console.log("Order Data:", orderData); 
 
       switch (paymentMethod) {
         // Api Call for COD
