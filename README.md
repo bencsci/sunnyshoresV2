@@ -18,6 +18,12 @@ Sunny Shores is a full-stack e-commerce platform designed for smooth, secure, an
 - **Order Tracking & Management**  
   View order history, track progress, and manage purchases efficiently.
 
+- **Admin Panel**  
+  Admins can log in to:
+  - Add, update, or delete store items
+  - View all customer orders
+  - Update shipping and order tracking statuses
+
 - **Modular & Scalable Architecture**  
   Built with best practices using a RESTful API, separating frontend and backend logic for scalability.
 
@@ -33,5 +39,3 @@ Sunny Shores is a full-stack e-commerce platform designed for smooth, secure, an
 - MongoDB (Mongoose)
 - JWT for Authentication
 - Bcrypt for Password Encryption
-
-![image](https://github.com/user-attachments/assets/b126a6c9-abbf-4026-b582-49a60316a520)
