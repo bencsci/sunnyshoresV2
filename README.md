@@ -2,7 +2,7 @@
 
 # Sunny Shores
 
-Sunny Shores is a full-stack e-commerce platform designed for smooth, secure, and seamless online shopping. With a modern frontend, real-time cart updates, and robust backend architecture, it delivers a complete shopping experience from browsing to checkout.
+Sunny Shores is a full-stack mock "e-commerce platform" designed for smooth, secure, and seamless online shopping. With a modern frontend, real-time cart updates, and robust backend architecture.
 
 ## Features
 
