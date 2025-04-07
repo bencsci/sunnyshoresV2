@@ -4,23 +4,24 @@ import Placeholder from "../assets/Placeholder.png";
 import { Link } from "react-router";
 
 const Hero = () => {
-  const { products } = useContext(ShopContext);
+  const { products, isLoading } = useContext(ShopContext);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (products.length > 0) {
+    if (!isLoading && products.length > 0) {
+      const intervalId = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % products.length);
-      }
-    }, 3000);
+      }, 3000);
 
-    return () => clearInterval(intervalId);
-  }, [products]);
+      return () => clearInterval(intervalId);
+    }
+  }, [products, isLoading]);
 
-  const currentProduct =
-    products.length > 0
-      ? products[currentIndex]
-      : { image: Placeholder, name: "Loading Product..." };
+  const currentProduct = isLoading
+    ? { image: Placeholder, name: "Loading..." }
+    : products.length > 0
+    ? products[currentIndex]
+    : { image: Placeholder, name: "No products available" };
 
   return (
     <div className="relative overflow-hidden py-16">
@@ -91,7 +92,6 @@ const Hero = () => {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <Link to={`/product/${currentProduct._id}`}>
-                {" "}
                 <img
                   src={currentProduct.image}
                   alt={currentProduct.name}
@@ -103,17 +103,19 @@ const Hero = () => {
                 <h3 className="text-white text-xl font-semibold">
                   {currentProduct.name}
                 </h3>
-                <div className="flex gap-2 mt-2">
-                  {products.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentIndex(idx)}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        idx === currentIndex ? "bg-white w-6" : "bg-white/50"
-                      }`}
-                    />
-                  ))}
-                </div>
+                {!isLoading && products.length > 0 && (
+                  <div className="flex gap-2 mt-2">
+                    {products.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentIndex(idx)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          idx === currentIndex ? "bg-white w-6" : "bg-white/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

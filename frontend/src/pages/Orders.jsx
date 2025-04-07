@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/shopContext";
 import { Link } from "react-router";
 import axios from "axios";
+import LoadingBar from "../components/LoadingBar";
 
 /**
  * A helper function to return a Tailwind background color class
@@ -87,6 +88,7 @@ const Orders = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
+      {isLoading && <LoadingBar />}
       {isLoading ? (
         <div className="flex items-center justify-center min-h-screen"></div>
       ) : (
