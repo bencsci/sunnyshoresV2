@@ -218,10 +218,6 @@ export const ShopContextProvider = ({ children }) => {
     initialLoadComplete,
   };
 
-  if (!initialLoadComplete) {
-    return null;
-  }
-
   return (
     <ShopContext.Provider value={contextValue}>{children}</ShopContext.Provider>
   );
