@@ -82,11 +82,11 @@ const PlaceOrder = () => {
       let orderData = {
         address: deliveryInfo,
         items: orderItems,
-        amount: parseFloat(amount.total.toFixed(2)),
-        deliveryCharge: parseFloat(amount.shipping.toFixed(2)),
+        amount: Number(amount.total.toFixed(2)),
+        deliveryCharge: Number(amount.shipping.toFixed(2)),
       };
 
-      //console.log("Order Data:", orderData); 
+      //console.log("Order Data:", orderData);
 
       switch (paymentMethod) {
         // Api Call for COD

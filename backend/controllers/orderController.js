@@ -1,7 +1,7 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import Stripe from "stripe";
-import paypal from "@paypal/checkout-server-sdk";
+import paypal from "@paypal/paypal-server-sdk";
 
 // global variables
 const currency = "cad";
@@ -151,7 +151,7 @@ const placeOrderStripe = async (req, res) => {
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100,
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
@@ -162,7 +162,7 @@ const placeOrderStripe = async (req, res) => {
         product_data: {
           name: "Delivery Charges",
         },
-        unit_amount: deliveryCharge * 100,
+        unit_amount: Math.round(deliveryCharge * 100),
       },
       quantity: 1,
     });
